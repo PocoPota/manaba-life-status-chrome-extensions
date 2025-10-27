@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Manaba Life Status",
+  "version": "1.0",
+  "description": "Manabaのライフステータスを表示する拡張機能",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://manaba.tsukuba.ac.jp/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://manaba.tsukuba.ac.jp/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
