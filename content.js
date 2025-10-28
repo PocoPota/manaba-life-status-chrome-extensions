@@ -30,19 +30,24 @@ const logManabaData = async () => {
   };
 
   const setLog = async (time, url) => {
-    console.log("アクセスが記録されました", time);
-    await chrome.storage.sync.set({
-      "url": url,
-      "date": time,
-    });
+    console.log("アクセスが記録されました", new Date(time).toLocaleString());
+    try {
+      await chrome.storage.sync.set({
+        "url": url,
+        "date": time,
+      });
+    } catch (error) {
+      console.error('ストレージへの保存に失敗しました:', error);
+      throw error; // エラーを再スローして上位で処理できるようにする
+    }
 
     // GitHub Actions APIを叩く
-    const timestamp = new Date(time).getTime();
+    const timestamp = time;
     const host = new URL(url).hostname;
     await callGitHubAPI(timestamp, host);
   };
 
-  const nowTime = new Date().toLocaleString();
+  const nowTime = Date.now();
 
   // get prev data from local storage
   const result = await chrome.storage.sync.get(["date"]);
