@@ -1,0 +1,5 @@
+# Environment variables
+.env
+
+# Chrome extension config (contains sensitive tokens)
+config.js

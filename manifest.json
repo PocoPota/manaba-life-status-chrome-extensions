@@ -4,16 +4,16 @@
   "version": "1.0",
   "description": "Manabaのライフステータスを表示する拡張機能",
   "permissions": [
-    "storage",
-    "activeTab"
+    "storage"
   ],
   "host_permissions": [
-    "https://manaba.tsukuba.ac.jp/*"
+    "https://manaba.tsukuba.ac.jp/*",
+    "https://api.github.com/*"
   ],
   "content_scripts": [
     {
       "matches": ["https://manaba.tsukuba.ac.jp/*"],
-      "js": ["content.js"],
+      "js": ["config.js", "content.js"],
       "run_at": "document_end"
     }
   ]
