@@ -49,7 +49,7 @@ const logManabaData = () => {
     const prevTime = result.date;
     const timeDiff = prevTime ? (new Date(nowTime) - new Date(prevTime)) / 1000 : null;
 
-    if (timeDiff & timeDiff > 60 * 5) {
+    if (!prevTime || (timeDiff & timeDiff > 60 * 5)) {
       setLog(nowTime, window.location.href);
     } else {
       console.log("5分以内の再アクセスのため、記録を更新しませんでした");
