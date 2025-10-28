@@ -1,4 +1,4 @@
-const logManabaData = () => {
+const logManabaData = async () => {
   console.log("Manaba Life Status Extension Loaded");
 
   const callGitHubAPI = async (timestamp, host) => {
@@ -29,9 +29,9 @@ const logManabaData = () => {
     }
   };
 
-  const setLog = (time, url) => {
+  const setLog = async (time, url) => {
     console.log("アクセスが記録されました", time);
-    chrome.storage.sync.set({
+    await chrome.storage.sync.set({
       "url": url,
       "date": time,
     });
@@ -39,22 +39,21 @@ const logManabaData = () => {
     // GitHub Actions APIを叩く
     const timestamp = new Date(time).getTime();
     const host = new URL(url).hostname;
-    callGitHubAPI(timestamp, host);
-  }
+    await callGitHubAPI(timestamp, host);
+  };
 
   const nowTime = new Date().toLocaleString();
 
   // get prev data from local storage
-  chrome.storage.sync.get(["date"], (result) => {
-    const prevTime = result.date;
-    const timeDiff = prevTime ? (new Date(nowTime) - new Date(prevTime)) / 1000 : null;
+  const result = await chrome.storage.sync.get(["date"]);
+  const prevTime = result.date;
+  const timeDiff = prevTime ? (nowTime - prevTime) / 1000 : null;
 
-    if (!prevTime || (timeDiff & timeDiff > 60 * 5)) {
-      setLog(nowTime, window.location.href);
-    } else {
-      console.log("5分以内の再アクセスのため、記録を更新しませんでした");
-    }
-  });
-}
+  if (!prevTime || (timeDiff && timeDiff > 60 * 5)) {
+    await setLog(nowTime, window.location.href);
+  } else {
+    console.log("5分以内の再アクセスのため、記録を更新しませんでした");
+  }
+};
 
 logManabaData();
