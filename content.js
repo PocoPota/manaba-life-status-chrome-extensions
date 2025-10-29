@@ -30,9 +30,9 @@ const logManabaData = async () => {
   };
 
   const setLog = async (time, url) => {
-    console.log("アクセスが記録されました", new Date(time).toLocaleString());
+    console.log("アクセスが記録されました", getDateTimeFromTs(time));
     try {
-      await chrome.storage.sync.set({
+      await setStorage({
         "url": url,
         "date": time,
       });
@@ -47,14 +47,16 @@ const logManabaData = async () => {
     await callGitHubAPI(timestamp, host);
   };
 
-  const nowTime = Date.now();
+  const nowTime = getNow();
 
   // get prev data from local storage
-  const result = await chrome.storage.sync.get(["date"]);
+  const result = await getStorage(["date"]);
   const prevTime = result.date;
-  const timeDiff = prevTime ? (nowTime - prevTime) / 1000 : null;
+  const timeDiff = prevTime ? (nowTime - prevTime) : null;
 
-  if (!prevTime || (timeDiff && timeDiff > 60 * 5)) {
+  const FIVE_MINUTES_MS = 5 * 60 * 1000; // 5分をミリ秒で表現
+
+  if (!prevTime || (timeDiff && timeDiff > FIVE_MINUTES_MS)) {
     await setLog(nowTime, window.location.href);
   } else {
     console.log("5分以内の再アクセスのため、記録を更新しませんでした");

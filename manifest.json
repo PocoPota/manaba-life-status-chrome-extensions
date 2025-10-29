@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "matches": ["https://manaba.tsukuba.ac.jp/*"],
-      "js": ["config.js", "content.js"],
+      "js": ["utils.js", "config.js", "content.js"],
       "run_at": "document_end"
     }
   ]
