@@ -29,12 +29,12 @@ const logManabaData = async () => {
     }
   };
 
-  const setLog = async (time, url) => {
-    console.log("アクセスが記録されました", getDateTimeFromTs(time));
+  const setLog = async (ts, host) => {
+    console.log("アクセスが記録されました", getDateTimeFromTs(ts));
     try {
       await setStorage({
-        "url": url,
-        "date": time,
+        "host": host,
+        "ts": ts,
       });
     } catch (error) {
       console.error('ストレージへの保存に失敗しました:', error);
@@ -42,22 +42,21 @@ const logManabaData = async () => {
     }
 
     // GitHub Actions APIを叩く
-    const timestamp = time;
-    const host = new URL(url).hostname;
-    await callGitHubAPI(timestamp, host);
+    await callGitHubAPI(ts, host);
   };
 
-  const nowTime = getNow();
+  const nowTs = getNow();
 
   // get prev data from local storage
-  const result = await getStorage(["date"]);
-  const prevTime = result.date;
-  const timeDiff = prevTime ? (nowTime - prevTime) : null;
+  const result = await getStorage(["ts"]);
+  const prevTs = result.ts;
+  const timeDiff = prevTs ? (nowTs - prevTs) : null;
 
   const FIVE_MINUTES_MS = 5 * 60 * 1000; // 5分をミリ秒で表現
 
-  if (!prevTime || (timeDiff && timeDiff > FIVE_MINUTES_MS)) {
-    await setLog(nowTime, window.location.href);
+  if (!prevTs || (timeDiff && timeDiff > FIVE_MINUTES_MS)) {
+    const host = window.location.hostname;
+    await setLog(nowTs, host);
   } else {
     console.log("5分以内の再アクセスのため、記録を更新しませんでした");
   }
