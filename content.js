@@ -1,7 +1,7 @@
 const logManabaData = async () => {
   console.log("Manaba Life Status Extension Loaded");
 
-  const callGitHubAPI = async (timestamp, host) => {
+  const callGitHubAPI = async (ts, host) => {
     try {
       const response = await fetch(CONFIG.API_URL, {
         method: 'POST',
@@ -13,7 +13,7 @@ const logManabaData = async () => {
         body: JSON.stringify({
           ref: CONFIG.BRANCH,
           inputs: {
-            timestamp: timestamp.toString(),
+            timestamp: ts.toString(),
             host: host,
           },
         }),
